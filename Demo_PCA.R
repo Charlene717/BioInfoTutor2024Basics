@@ -20,7 +20,9 @@ if(Set_Demo == "Demo1"){
 
   data <- data.frame(X = X, Y = Y, Z = Z)
   data <- data.frame(X = X, Y = Y, Z = Z)
+
 }else if(Set_Demo == "Demo2"){
+
   # 產生一些範例的三維資料
   set.seed(123)
   data <- data.frame(
@@ -54,6 +56,10 @@ if(!require('plotly')) {install.packages('plotly'); library(plotly)}
 # 提取主成分
 pca_data <- data.frame(pca_result$x)
 
+# 計算三個主成分中的全局最大值和最小值，作為所有軸的上下界
+max_range <- max(pca_data)
+min_range <- min(pca_data)
+
 # 定義PC1和PC2的平面
 x_range <- seq(min(pca_data$PC1), max(pca_data$PC1), length.out = 100)
 y_range <- seq(min(pca_data$PC2), max(pca_data$PC2), length.out = 100)
@@ -67,9 +73,23 @@ fig <- plot_ly() %>%
   add_surface(x = ~x_range, y = ~y_range, z = ~z_plane, opacity = 0.2, showscale = FALSE) %>%
   layout(
     scene = list(
-      xaxis = list(title = paste0('PC1 (', round(explained_variance[1] * 100, 2), '%)')),
-      yaxis = list(title = paste0('PC2 (', round(explained_variance[2] * 100, 2), '%)')),
-      zaxis = list(title = paste0('PC3 (', round(explained_variance[3] * 100, 2), '%)')),
+      xaxis = list(
+        title = paste0('PC1 (', round(explained_variance[1] * 100, 2), '%)'),
+        range = c(min_range, max_range),
+        dtick = (max_range - min_range) / 5
+      ),
+      yaxis = list(
+        title = paste0('PC2 (', round(explained_variance[2] * 100, 2), '%)'),
+        range = c(min_range, max_range),
+        dtick = (max_range - min_range) / 5
+      ),
+      zaxis = list(
+        title = paste0('PC3 (', round(explained_variance[3] * 100, 2), '%)'),
+        range = c(min_range, max_range),
+        dtick = (max_range - min_range) / 5
+      ),
+      aspectmode = 'manual',
+      aspectratio = list(x = 1, y = 1, z = 1),
       camera = list(
         eye = list(x = 1.25, y = 1.25, z = 1.25)
       )
