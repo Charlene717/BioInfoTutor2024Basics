@@ -1,11 +1,27 @@
 
-# 產生一些範例的三維資料
-set.seed(123)
-data <- data.frame(
-  X = rnorm(100),
-  Y = rnorm(100, mean = 5, sd = 2),
-  Z = rnorm(100, mean = -3, sd = 1)
-)
+
+Set_Demo <- "Demo1"
+
+if(Set_Demo == "Demo1"){
+  # 產生接近平面的三維資料
+  set.seed(123)
+  n <- 100
+  X <- rnorm(n)
+  Y <- 2 * X + rnorm(n, sd = 0.1)  # Y 和 X 緊密相關
+  Z <- 0.5 * X + 0.5 * Y + rnorm(n, sd = 0.1)  # Z 也基本位於平面內
+
+  data <- data.frame(X = X, Y = Y, Z = Z)
+}else if(Set_Demo == "Demo2"){
+  # 產生一些範例的三維資料
+  set.seed(123)
+  data <- data.frame(
+    X = rnorm(100),
+    Y = rnorm(100, mean = 5, sd = 2),
+    Z = rnorm(100, mean = -3, sd = 1)
+  )
+}
+
+
 
 # 執行PCA分析
 pca_result <- prcomp(data, scale. = TRUE)
@@ -53,7 +69,6 @@ fig <- plot_ly() %>%
 
 # 顯示3D圖形
 fig
-
 
 
 
