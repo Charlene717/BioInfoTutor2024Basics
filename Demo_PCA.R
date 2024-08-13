@@ -10,12 +10,14 @@ data <- data.frame(
 # 執行PCA分析
 pca_result <- prcomp(data, scale. = TRUE)
 
+
+# 查看每個主成分的資訊量（解釋的變異比例）
+explained_variance <- summary(pca_result)$importance[2,]
+explained_variance
+
+
 # 查看PCA結果的摘要
 summary(pca_result)
-
-# 提取前兩個主成分
-pca_data <- data.frame(pca_result$x[, 1:2])
-
 
 
 
@@ -24,12 +26,25 @@ pca_data <- data.frame(pca_result$x[, 1:2])
 # 檢查並安裝所需套件
 if(!require('plotly')) {install.packages('plotly'); library(plotly)}
 
-fig <- plot_ly(pca_data, x = ~PC1, y = ~PC2, z = ~PC3, type = 'scatter3d', mode = 'markers') %>%
+# 提取主成分
+pca_data <- data.frame(pca_result$x)
+
+# 定義PC1和PC2的平面
+x_range <- seq(min(pca_data$PC1), max(pca_data$PC1), length.out = 100)
+y_range <- seq(min(pca_data$PC2), max(pca_data$PC2), length.out = 100)
+
+# 生成與 x_range 和 y_range 尺寸匹配的 z_plane 矩陣
+z_plane <- matrix(0, nrow = length(x_range), ncol = length(y_range))
+
+# 使用plotly繪製3D散佈圖，並添加PC1和PC2的透明平面和主成分解釋變異比例
+fig <- plot_ly() %>%
+  add_markers(data = pca_data, x = ~PC1, y = ~PC2, z = ~PC3, marker = list(color = 'blue')) %>%
+  add_surface(x = ~x_range, y = ~y_range, z = ~z_plane, opacity = 0.2, showscale = FALSE) %>%
   layout(
     scene = list(
-      xaxis = list(title = 'PC1'),
-      yaxis = list(title = 'PC2'),
-      zaxis = list(title = 'PC3'),
+      xaxis = list(title = paste0('PC1 (', round(explained_variance[1] * 100, 2), '%)')),
+      yaxis = list(title = paste0('PC2 (', round(explained_variance[2] * 100, 2), '%)')),
+      zaxis = list(title = paste0('PC3 (', round(explained_variance[3] * 100, 2), '%)')),
       camera = list(
         eye = list(x = 1.25, y = 1.25, z = 1.25)
       )
@@ -41,7 +56,11 @@ fig
 
 
 
+
 # 繪製PCA結果的二維圖形
+# 提取前兩個主成分
+pca_data <- data.frame(pca_result$x[, 1:2])
+
 # 檢查並安裝所需套件
 if(!require('ggplot2')) {install.packages('ggplot2'); library(ggplot2)}
 ggplot(pca_data, aes(x = PC1, y = PC2)) +
