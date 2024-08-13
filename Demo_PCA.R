@@ -1,3 +1,11 @@
+##### Presetting ######
+rm(list = ls()) # Clean variable ##* Comment out if Run All
+memory.limit(150000)
+
+
+#### Load Packages ####
+## Load packages by CRAN
+if(!require("tidyverse")) install.packages("tidyverse"); library(tidyverse)
 
 
 Set_Demo <- "Demo1"
@@ -7,9 +15,10 @@ if(Set_Demo == "Demo1"){
   set.seed(123)
   n <- 100
   X <- rnorm(n)
-  Y <- 2 * X + rnorm(n, sd = 0.1)  # Y 和 X 緊密相關
-  Z <- 0.5 * X + 0.5 * Y + rnorm(n, sd = 0.1)  # Z 也基本位於平面內
+  Y <- rnorm(n)
+  Z <- 0.01 * X + 0.01 * Y + rnorm(n, sd = 0.01)  # Z 的變異極小
 
+  data <- data.frame(X = X, Y = Y, Z = Z)
   data <- data.frame(X = X, Y = Y, Z = Z)
 }else if(Set_Demo == "Demo2"){
   # 產生一些範例的三維資料
