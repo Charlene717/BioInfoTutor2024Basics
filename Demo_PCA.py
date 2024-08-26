@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt 
 from sklearn.decomposition import PCA
 from sklearn.datasets import load_iris
 
